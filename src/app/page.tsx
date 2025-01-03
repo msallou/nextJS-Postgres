@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 
 export default function Home() {
-	const [tasks, setTasks] = useState<any[]>([]); // Initialize with an empty array
-    
+    const [tasks, setTasks] = useState<any[]>([]); // Initialize with an empty array
+
     // Fetch tasks when the component mounts
     useEffect(() => {
         const fetchTasks = async () => {
@@ -23,7 +23,7 @@ export default function Home() {
         };
 
         fetchTasks();
-    }, []);
+    }, []); // Empty dependency array ensures this runs only once when the component mounts
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,7 +43,24 @@ export default function Home() {
                 const data = await response.json();
 
                 if (response.ok) {
-                    setTasks((prevTasks) => [...prevTasks, { id: data.id, title: data.title }]);
+                    // Re-fetch tasks after adding the new one to reflect changes in the UI
+                    const fetchTasks = async () => {
+                        try {
+                            const response = await fetch("/api/get-tasks/");
+                            const data = await response.json();
+                            if (response.ok) {
+                                setTasks(data);
+                            } else {
+                                console.error("Failed to fetch tasks:", data.error);
+                            }
+                        } catch (error) {
+                            console.error("Error fetching tasks:", error);
+                        }
+                    };
+                    fetchTasks();
+
+                    // Clear the input field after form submission
+                    (e.target as HTMLFormElement).reset();
                 } else {
                     console.error("Failed to add task:", data.error);
                 }
