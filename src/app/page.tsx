@@ -77,14 +77,17 @@ export default function Home() {
             <h1 className="text-3xl font-medium">All Tasks:</h1>
 
             <ul className="my-10 text-center">
-                {tasks.length > 0 ? (
-                    tasks.map((task) => (
-                        <li key={task.id}>{task.id}. {task.task}</li>
-                    ))
-                ) : (
-                    <p>No tasks found.</p>
-                )}
-            </ul>
+				{tasks.length > 0 ? (
+					tasks.map((task, index) => (
+						<li key={task.id}>
+							{index + 1}. {task.task}  {/* Display index + 1 to number the tasks */}
+						</li>
+					))
+				) : (
+					<p>No tasks found.</p>
+				)}
+			</ul>
+
 
             <form onSubmit={handleSubmit} className="space-x-2 h-4">
                 <input
